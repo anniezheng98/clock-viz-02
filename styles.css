@@ -1,81 +1,243 @@
-/* Reset and base */
+/* Retro flip-clock styling, flat 2D */
+:root {
+  --page: #efece6;
+  --case: #d4473a;
+  --case-dark: #b83a2f;
+  --face: #efe9d9;
+  --tile-top: #e9c193;
+  --tile-bottom: #e3b886;
+  --ink: #3a3733;
+  --muted: #6f6a62;
+  --knob: #efe9d9;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
+
 html, body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  font-family: "Fragment Mono", monospace;
+  font-family: "Fragment Mono", ui-monospace, monospace;
 }
 
 body {
-  background: #B9B9B9; /* soft gray */
+  background: var(--page);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 24px 16px;
 }
 
-.clock-container {
+/* ---------- Clock shell ---------- */
+.clock {
+  position: relative;
+  width: min(92vw, 880px);
+  padding-top: 14px; /* room for top buttons */
+}
+
+.top-buttons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 3%;
+  padding-left: 13%;
+}
+.btn {
+  width: 5.5%;
+  height: 16px;
+  background: #4a4744;
+  border-radius: 4px 4px 0 0;
+}
+.btn-wide {
+  width: 24%;
+  margin-left: auto;
+  margin-right: 32%;
+}
+
+.case {
+  position: relative;
+  background: var(--case);
+  border-radius: clamp(22px, 4.5vw, 44px);
+  padding: clamp(10px, 1.6vw, 16px);
+  box-shadow: inset 0 -6px 0 var(--case-dark);
+}
+
+.face {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
+  gap: clamp(8px, 1.8vw, 20px);
+  background: var(--face);
+  border-radius: clamp(14px, 3vw, 30px);
+  padding: clamp(18px, 4vw, 44px) clamp(14px, 3vw, 36px);
+  /* clear-plastic rim */
+  box-shadow:
+    0 0 0 clamp(3px, 0.6vw, 6px) rgba(255, 255, 255, 0.45),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
+.pin {
+  position: absolute;
+  top: clamp(10px, 2.4vw, 24px);
+  left: clamp(14px, 3vw, 30px);
+  width: clamp(8px, 1.4vw, 14px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #262422;
+}
+
+/* ---------- Side indicators ---------- */
+.side {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 3vw, 34px);
+  font-size: clamp(9px, 1.3vw, 12px);
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.ampm { display: flex; flex-direction: column; gap: 0.7em; }
+.ind {
+  position: relative;
+  padding-right: 1.1em;
+}
+.ind::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 0.5em;
+  height: 0.5em;
+  margin-top: -0.25em;
+  border-radius: 50%;
+  background: var(--ink);
+  opacity: 0;
+}
+.ind.on::after { opacity: 1; }
+
+.bells { display: flex; flex-direction: column; gap: 0.5em; }
+.bells svg { width: 1.1em; height: 1.1em; fill: var(--muted); }
+
+.brand {
+  flex: none;
+  font-size: clamp(9px, 1.3vw, 13px);
+  color: var(--muted);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Flip tiles ---------- */
 .tiles-row {
+  flex: 1 1 auto;
   display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  flex-wrap: nowrap;
+  gap: clamp(6px, 1.4vw, 14px);
 }
 
 .tile {
-  --tile-min: clamp(44px, 14vw, 64px);
-  min-width: var(--tile-min);
-  min-height: 0;
-  padding: 8px 0.5em;
-  background: #2d2d2d; /* dark charcoal */
-  border-radius: 4px;
+  position: relative;
+  flex: 1 1 0;
+  aspect-ratio: 8 / 7;
+  container-type: inline-size;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow:
-    inset 0 1px 2px rgba(0, 0, 0, 0.25),
-    0 1px 0 rgba(255, 255, 255, 0.05);
-  overflow: visible;
+  overflow: hidden;
+  border-radius: clamp(4px, 0.8vw, 8px);
+  background: linear-gradient(to bottom, var(--tile-top) 0 50%, var(--tile-bottom) 50% 100%);
+}
+
+/* split line across the middle */
+.tile::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  background: rgba(58, 55, 51, 0.75);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+  z-index: 2;
 }
 
 .tile-text {
-  font-size: clamp(3rem, 4vw, 2rem);
-  font-weight: 500;
-  color: #B9B9B9; /* match soft gray background */
-  letter-spacing: -0.02em;
+  --len: 3;
+  /* shrink long equations so they always fit the tile */
+  font-size: min(30cqi, calc(88cqi / (var(--len) * 0.6)));
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.03em;
   line-height: 1;
   white-space: nowrap;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform-origin: 50% 50%;
+  transition: transform 0.2s ease-in, opacity 0.2s ease-in;
 }
 
+/* flip: fold shut at the split line, then open */
 .tile-text.animating {
-  opacity: 0;
-  transform: translateY(6px);
+  transform: scaleY(0);
+  opacity: 0.3;
 }
-
 .tile-text.animating-in {
+  transform: scaleY(1);
   opacity: 1;
-  transform: translateY(0);
+  transition-timing-function: ease-out;
 }
 
 .tile-text .eq-sup {
-  font-size: 0.65em;
+  font-size: 0.6em;
   vertical-align: super;
   line-height: 0;
 }
 
+.tick-dot {
+  position: absolute;
+  right: 7%;
+  bottom: 9%;
+  width: max(5px, 3.5cqi);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--ink);
+  animation: blink 1s steps(1) infinite;
+}
+
+/* ---------- Knob and stand ---------- */
+.knob {
+  position: absolute;
+  right: calc(-1 * clamp(14px, 3vw, 30px));
+  top: 50%;
+  width: clamp(16px, 3.4vw, 34px);
+  height: 34%;
+  transform: translateY(-40%);
+  border-radius: 0 10px 10px 0;
+  background:
+    repeating-linear-gradient(to bottom, rgba(0,0,0,0.12) 0 1px, transparent 1px 4px),
+    #e4dcc7;
+  box-shadow: inset -3px 0 0 rgba(0, 0, 0, 0.06);
+  z-index: -1;
+}
+
+.stand {
+  width: 56%;
+  height: clamp(12px, 2.4vw, 24px);
+  margin: 0 auto;
+  background: var(--case-dark);
+  border-radius: 0 0 8px 8px;
+}
+
 @keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0.4; }
+  0% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+
+@media (max-width: 560px) {
+  .brand, .bells { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .tile-text { transition: none; }
-  .colon { animation: none; }
+  .tick-dot { animation: none; }
 }

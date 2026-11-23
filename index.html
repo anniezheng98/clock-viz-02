@@ -10,18 +10,46 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="clock-container">
-    <div class="tiles-row">
-      <div class="tile" id="tile-hour" aria-label="Hour">
-        <span class="tile-text" id="text-hour">0</span>
-      </div>
-      <div class="tile" id="tile-minute" aria-label="Minute">
-        <span class="tile-text" id="text-minute">0</span>
-      </div>
-      <div class="tile" id="tile-second" aria-label="Second">
-        <span class="tile-text" id="text-second">0</span>
-      </div>
+  <main class="clock" aria-label="Math clock">
+    <div class="top-buttons" aria-hidden="true">
+      <span class="btn"></span>
+      <span class="btn"></span>
+      <span class="btn btn-wide"></span>
     </div>
+
+    <div class="case">
+      <div class="face">
+        <span class="pin" aria-hidden="true"></span>
+
+        <div class="side" aria-hidden="true">
+          <div class="ampm">
+            <span class="ind" id="ind-am">AM</span>
+            <span class="ind" id="ind-pm">PM</span>
+          </div>
+          <div class="bells">
+            <svg viewBox="0 0 12 12"><path d="M6 1.5a3 3 0 0 0-3 3v2.2L2 8.5h8L9 6.7V4.5a3 3 0 0 0-3-3Z M4.8 9.5a1.2 1.2 0 0 0 2.4 0Z"/></svg>
+          </div>
+        </div>
+
+        <div class="tiles-row">
+          <div class="tile" id="tile-hour" aria-label="Hour">
+            <span class="tile-text" id="text-hour">0</span>
+          </div>
+          <div class="tile" id="tile-minute" aria-label="Minute">
+            <span class="tile-text" id="text-minute">0</span>
+          </div>
+          <div class="tile" id="tile-second" aria-label="Second">
+            <span class="tile-text" id="text-second">0</span>
+            <span class="tick-dot" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <span class="brand">time for math</span>
+      </div>
+      <div class="knob" aria-hidden="true"></div>
+    </div>
+
+    <div class="stand" aria-hidden="true"></div>
   </main>
   <script src="script.js"></script>
 </body>

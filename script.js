@@ -389,6 +389,20 @@
     return escaped.replace(/\^(\d+)/g, '<sup class="eq-sup">$1</sup>');
   }
 
+  function setText(textEl, display) {
+    textEl.setAttribute('data-raw', display);
+    textEl.style.setProperty('--len', Math.max(3, display.replace(/\^/g, '').length));
+    textEl.innerHTML = equationDisplayToHtml(display);
+  }
+
+  const indAm = document.getElementById('ind-am');
+  const indPm = document.getElementById('ind-pm');
+  function setMeridiem(h24) {
+    const pm = h24 >= 12;
+    indAm.classList.toggle('on', !pm);
+    indPm.classList.toggle('on', pm);
+  }
+
   function updateTile(el, textEl, newDisplay, animate) {
     const html = equationDisplayToHtml(newDisplay);
     const same = textEl.innerHTML === html;
@@ -397,19 +411,20 @@
     if (animate) {
       textEl.classList.add('animating');
       setTimeout(function () {
-        textEl.innerHTML = html;
+        setText(textEl, newDisplay);
         textEl.classList.remove('animating');
         textEl.classList.add('animating-in');
-        setTimeout(function () { textEl.classList.remove('animating-in'); }, 80);
+        setTimeout(function () { textEl.classList.remove('animating-in'); }, 220);
       }, ANIM_MS);
     } else {
-      textEl.innerHTML = html;
+      setText(textEl, newDisplay);
     }
   }
 
   function tick() {
     const now = new Date();
     let hour = now.getHours();
+    setMeridiem(hour);
     const minute = now.getMinutes();
     const second = now.getSeconds();
     if (!use24h) hour = hour % 12 || 12;
@@ -448,12 +463,9 @@
       eqHour = generateEquation(h, 'hour');
       eqMinute = generateEquation(m, 'minute');
       eqSecond = generateEquation(s, 'second');
-      textHour.setAttribute('data-raw', eqHour.display);
-      textMinute.setAttribute('data-raw', eqMinute.display);
-      textSecond.setAttribute('data-raw', eqSecond.display);
-      textHour.innerHTML = equationDisplayToHtml(eqHour.display);
-      textMinute.innerHTML = equationDisplayToHtml(eqMinute.display);
-      textSecond.innerHTML = equationDisplayToHtml(eqSecond.display);
+      setText(textHour, eqHour.display);
+      setText(textMinute, eqMinute.display);
+      setText(textSecond, eqSecond.display);
     }, 20000);
   }
 
