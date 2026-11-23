@@ -122,11 +122,11 @@ body {
 
 .brand {
   flex: none;
-  font-size: clamp(9px, 1.3vw, 13px);
+  font-size: clamp(9px, 1.3vw, 12px); /* matches AM/PM labels */
   color: var(--muted);
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 
 /* ---------- Flip tiles ---------- */
